@@ -1,4 +1,4 @@
-const HOST_URL ="http://localhost:8080/";
+const HOST_URL ="http://localhost:8080";
 
 console.log(" Signup JS Loaded", {HOST_URL});
 

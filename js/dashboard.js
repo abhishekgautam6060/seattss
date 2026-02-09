@@ -12,7 +12,7 @@ let CURRENT_LIBRARY_ID =
 
 console.log("✅ dashboard.js loaded");
 
-const HOST_URL ="http://localhost:8080/";
+const HOST_URL ="http://localhost:8080";
 
 
 

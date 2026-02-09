@@ -1,4 +1,4 @@
-const HOST_URL ="http://localhost:8080/";
+const HOST_URL ="http://localhost:8080";
 
 function login() {
     fetch(`${HOST_URL}/api/auth/login`, {
