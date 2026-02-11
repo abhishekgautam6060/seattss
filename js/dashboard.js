@@ -43,7 +43,9 @@ window.onload = function () {
  * LIBRARY + SEAT FLOW
  *********************************/
 function checkLibraryAndLoad() {
-  fetch(`${HOST_URL}/api/libraries/exists`)
+  fetch(`${HOST_URL}/api/libraries/exists`, {
+    credentials: "include"
+  })
       .then(res => {
         console.log("📡 ${HOST_URL}/api/libraries/exists status:", res.status);
         if (!res.ok) throw new Error("Library exists API failed");
