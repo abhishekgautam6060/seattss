@@ -15,8 +15,6 @@ console.log("✅ dashboard.js loaded");
 const HOST_URL ="https://seatmanager-service-128817862922.us-central1.run.app";
 
 
-
-
 /*********************************
  * WINDOW LOAD (ONLY ONE)
  *********************************/
@@ -371,7 +369,7 @@ function updateViewAllText() {
 
    console.log("📦 Booking payload:", payload);
 
-   fetch(`${HOST_URL}/api/book`, {
+   fetch(`${HOST_URL}/api/book`, {credentials: "include"}, {
      method: "POST",
      headers: { "Content-Type": "application/json" },
      body: JSON.stringify(payload)

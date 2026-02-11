@@ -7,11 +7,14 @@ if (!CURRENT_LIBRARY_ID) {
   alert("Library not loaded");
   throw new Error("Library missing");
 }
+
+const HOST_URL ="https://seatmanager-service-128817862922.us-central1.run.app";
+
 console.log(
   "Student API URL:",
   `/api/student/library/${CURRENT_LIBRARY_ID}`
 );
-fetch(`/api/student/library/${CURRENT_LIBRARY_ID}`)
+fetch(`${HOST_URL}/api/student/library/${CURRENT_LIBRARY_ID}` , { credentials: "include" })
   .then(res => {
     console.log("Student res : ", res)
     if (!res.ok) throw new Error("Unauthorized");
@@ -68,7 +71,7 @@ const CURRENT_LIBRARY_ID =
      alert("Library not loaded. Please refresh.");
      return;
    }
-    fetch(`/api/vacate/libraryId/${CURRENT_LIBRARY_ID}/seatId/${seatNumber}`, { method: "POST" })
+    fetch(`${HOST_URL}/api/vacate/libraryId/${CURRENT_LIBRARY_ID}/seatId/${seatNumber}`, { method: "POST" } , { credentials: "include" })
         .then(() => location.reload());
 }
 
@@ -107,7 +110,7 @@ function saveStudent() {
     endDate: document.getElementById("editEndDate").value + "T00:00:00"
   };
 
-  fetch(`/api/students/${id}`, {
+  fetch(`${HOST_URL}/api/students/${id}`, { credentials: "include" }, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)

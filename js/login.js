@@ -1,7 +1,7 @@
 const HOST_URL ="https://seatmanager-service-128817862922.us-central1.run.app";
 
 function login() {
-    fetch(`${HOST_URL}/api/auth/login`, {
+    fetch(`${HOST_URL}/api/auth/login`,  { credentials: "include" }, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

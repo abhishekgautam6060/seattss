@@ -3,8 +3,10 @@ function toggleProfileMenu() {
   menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 
+const HOST_URL ="https://seatmanager-service-128817862922.us-central1.run.app";
+
 function logout() {
-  fetch("/api/auth/logout", { method: "POST" })
+  fetch(`${HOST_URL}/api/auth/logout`, { credentials: "include" }, { method: "POST" })
     .then(() => window.location.href = "/login.html");
 }
 
@@ -16,7 +18,7 @@ document.addEventListener("click", function (e) {
   }
 });
 
-fetch("/api/header")
+fetch(`${HOST_URL}/api/header`, { credentials: "include" })
   .then(res => {
     if (!res.ok) throw new Error("Not authenticated");
     return res.json();

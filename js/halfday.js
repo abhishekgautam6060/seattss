@@ -3,7 +3,9 @@ let CURRENT_LIBRARY_ID =
     ? Number(localStorage.getItem("LIBRARY_ID"))
     : null;
 
-fetch(`/api/student/halfday/library/${CURRENT_LIBRARY_ID}`)
+const HOST_URL ="https://seatmanager-service-128817862922.us-central1.run.app";
+
+fetch(`${HOST_URL}/api/student/halfday/library/${CURRENT_LIBRARY_ID}` , { credentials: "include" })
   .then(res => {
     if (!res.ok) return [];
     return res.json();
@@ -53,7 +55,7 @@ function saveHalfDayStudent() {
     expiryDate: hdExpiry.value
   };
 
-  fetch("/api/student/halfday", {
+  fetch(`${HOST_URL}/api/student/halfday` , { credentials: "include" }, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
@@ -88,7 +90,7 @@ function createHalfDayStudent() {
     halfDaySlot: document.getElementById("hdSlot").value
   };
 
-  fetch(`/api/student/create/library/${CURRENT_LIBRARY_ID}`, {
+  fetch(`${HOST_URL}/api/student/create/library/${CURRENT_LIBRARY_ID}`, { credentials: "include" },  {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)

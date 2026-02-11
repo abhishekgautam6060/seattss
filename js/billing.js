@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function loadBillingSummary() {
     fetch(
         `${HOST_URL}/api/billing/summary/${CURRENT_LIBRARY_ID}?year=${year}&month=${month}`
-      )
+        , { credentials: "include" })
       .then(res => res.json())
       .then(d => {
 
@@ -54,7 +54,7 @@ function loadBillingSummary() {
 }
 function loadExpenses() {
   fetch(
-          `/api/billing/expenses/library/${CURRENT_LIBRARY_ID}`
+          `${HOST_URL}/api/billing/expenses/library/${CURRENT_LIBRARY_ID}`, { credentials: "include" }
         )
     .then(res => res.json())
     .then(data => {
@@ -140,7 +140,7 @@ function saveExpense() {
     status: exStatus.value
   };
 
-  fetch(`/api/expenses/library/${CURRENT_LIBRARY_ID}`, {
+  fetch(`${HOST_URL}/api/expenses/library/${CURRENT_LIBRARY_ID}`, { credentials: "include" }, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
@@ -175,13 +175,13 @@ function getCategoryClass(category) {
 function deleteExpense(id) {
   if (!confirm("Delete this expense?")) return;
 
-  fetch(`/api/billing/expenses/${id}/library/${CURRENT_LIBRARY_ID}`, { method: "DELETE" })
+  fetch(`${HOST_URL}/api/billing/expenses/${id}/library/${CURRENT_LIBRARY_ID}`, { credentials: "include" }, { method: "DELETE" })
     .then(() => loadExpenses());
 }
 
 
 function editExpense(id) {
-  fetch(`/api/billing/expenses/library/${CURRENT_LIBRARY_ID}`)
+  fetch(`${HOST_URL}/api/billing/expenses/library/${CURRENT_LIBRARY_ID}`, { credentials: "include" })
     .then(res => res.json())
     .then(list => {
       const e = list.find(x => x.id === id);
@@ -218,7 +218,7 @@ function updateExpense() {
     status: editStatus.value
   };
 
-  fetch(`/api/billing/expenses/${id}/library/${CURRENT_LIBRARY_ID}`, {
+  fetch(`${HOST_URL}/api/billing/expenses/${id}/library/${CURRENT_LIBRARY_ID}`, { credentials: "include" }, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
