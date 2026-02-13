@@ -438,6 +438,7 @@ const CURRENT_LIBRARY_ID =
         fillStudentModal(student);
         loadAvailableSeats(currentSeatNumber);
         showModal("studentModal");
+        console.log("✅ Student data loaded for seat", seatNumber, student);
       })
       .catch(err => console.error(err));
 }
@@ -449,6 +450,8 @@ function fillStudentModal(student) {
   setValue("detailJoinDate", student.bookingDate);
   setValue("detailExpireDate", student.expiryDate);
   setValue("detailAmount", student.amountPaid);
+
+  console.log("Student details loaded into modal:", student);
 }
 
 
