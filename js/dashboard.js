@@ -478,6 +478,7 @@ const CURRENT_LIBRARY_ID =
             closeStudentModal();
             refreshUI();
         });
+        console.log(`${HOST_URL}/api/vacate/libraryId/${CURRENT_LIBRARY_ID}/seatId/${currentSeatNumber}`)
 }
 
 /*********************************
