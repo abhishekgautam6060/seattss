@@ -35,7 +35,7 @@
 //         alert("Something went wrong");
 //     });
 // }
-const HOST_URL = "https://seatmanager-service-128817862922.us-central1.run.app";
+const HOST_URL = "https://seat-manager-backend-production.up.railway.app";
 
 /*********************************
  * AUTH HEADER HELPER
