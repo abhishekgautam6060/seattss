@@ -182,6 +182,8 @@ const CURRENT_LIBRARY_ID =
     ? Number(localStorage.getItem("LIBRARY_ID"))
     : null;
 
+const token = localStorage.getItem("TOKEN");
+
 if (!CURRENT_LIBRARY_ID) {
   alert("Library not loaded");
   throw new Error("Library missing");
@@ -193,7 +195,6 @@ const HOST_URL = "https://seat-manager-backend-production.up.railway.app";
  * AUTH HEADER HELPER
  *********************************/
 function getAuthHeaders() {
-  const token = localStorage.getItem("TOKEN");
 
   if (!token) {
     alert("Session expired. Please login again.");
@@ -399,4 +400,38 @@ function loadStudentProfile(s) {
  *********************************/
 function goTo(path) {
   window.location.href = path;
+}
+
+
+
+// IMPORT
+function importExcel(event) {
+  const file = event.target.files[0];
+
+  let formData = new FormData();
+  formData.append("file", file);
+
+  console.log("Importing file:", file),
+    console.log(
+      "URL",
+      `${HOST_URL}/api/student/import/library/${CURRENT_LIBRARY_ID}`
+    );
+
+  fetch(`${HOST_URL}/api/student/import/library/${CURRENT_LIBRARY_ID}`, {
+    method: "POST",
+    // ✅ IMPORTANT: Only send Authorization
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+    body: formData,
+  })
+    .then((res) => res.text())
+    .then((data) => {
+      alert("Import Successful");
+      location.reload();
+    })
+    .catch((err) => {
+      alert("Import Failed");
+      console.error(err);
+    });
 }

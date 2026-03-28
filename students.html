@@ -36,6 +36,12 @@
             <button class="tab active">All Students</button>
             <button class="tab">Active</button>
             <button class="tab danger">Expired</button>
+            <!-- NEW BUTTONS -->
+            <button class="tab" onclick="exportExcel()">Export Excel</button>
+            <input type="file" id="excelFile" hidden onchange="importExcel(event)">
+            <button class="tab" onclick="document.getElementById('excelFile').click()">
+                Import Excel
+            </button>
         </div>
 
         <!-- STUDENT TABLE -->
@@ -163,13 +169,11 @@
         </div>
     </div>
 
-
     <script>
         fetch("/newheader.html")
           .then(res => res.text())
           .then(html => document.getElementById("headerContainer").innerHTML = html);
     </script>
-
     <script src="js/newheader.js"></script>
     <script src="js/students.js"></script>
 </body>
