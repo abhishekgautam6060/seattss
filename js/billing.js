@@ -239,7 +239,9 @@ if (!CURRENT_LIBRARY_ID) {
   throw new Error("Library missing");
 }
 
-const HOST_URL = "https://seat-manager-backend-production.up.railway.app";
+// const HOST_URL = "https://seat-manager-backend-production.up.railway.app";
+const HOST_URL = "https://seat-manager-backend-production-bb04.up.railway.app";
+
 
 const today = new Date();
 const year = today.getFullYear();
