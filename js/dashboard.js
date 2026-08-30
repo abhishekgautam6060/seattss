@@ -12,7 +12,9 @@ let CURRENT_LIBRARY_ID =
 
 console.log("✅ dashboard.js loaded");
 
-const HOST_URL ="https://seat-manager-backend-production.up.railway.app";
+const HOST_URL ="https://seat-manager-backend-production-bb04.up.railway.app";
+// const HOST_URL ="https://seat-manager-backend-production.up.railway.app";
+
 
 function getAuthHeaders() {
   const token = localStorage.getItem("TOKEN");
