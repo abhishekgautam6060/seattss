@@ -1,125 +1,164 @@
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Library Seat Manager</title>
-    <link rel="stylesheet" href="css/dashboard.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/70513bf846.js" crossorigin="anonymous"></script>
-</head>
-<body>
-<div id="headerContainer"></div>
-<!--new dashboard-cards-->
-<div class="dashboard-cards">
-
-    <div class="stat-card clickable" onclick="scrollToSeats()">
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://kit.fontawesome.com/70513bf846.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div id="headerContainer"></div>
+    <!--new dashboard-cards-->
+    <div class="dashboard-cards">
+      <div class="stat-card clickable" onclick="scrollToSeats()">
         <div class="stat-left">
-            <p class="stat-title">Total Seats</p>
-            <h2 id="totalSeats">0</h2>
-            <span class="stat-sub">Library capacity</span>
+          <p class="stat-title">Total Seats</p>
+          <h2 id="totalSeats">0</h2>
+          <span class="stat-sub">Library capacity</span>
         </div>
         <div class="stat-icon purple">🪑</div>
-    </div>
+      </div>
 
-    <div class="stat-card clickable" onclick="openActiveFullDayStudents()">
+      <div class="stat-card clickable" onclick="openActiveFullDayStudents()">
         <div class="stat-left">
-            <p class="stat-title">Seats Filled</p>
-            <h2 id="filledSeats">0</h2>
-            <span class="stat-sub orange">Full day active</span>
+          <p class="stat-title">Seats Filled</p>
+          <h2 id="filledSeats">0</h2>
+          <span class="stat-sub orange">Full day active</span>
         </div>
         <div class="stat-icon orange">👤</div>
-    </div>
+      </div>
 
-    <div class="stat-card clickable" onclick="scrollToSeats()">
+      <div class="stat-card clickable" onclick="scrollToSeats()">
         <div class="stat-left">
-            <p class="stat-title">Seats Vacant</p>
-            <h2 id="vacantSeats">0</h2>
-            <span class="stat-sub green">Available</span>
+          <p class="stat-title">Seats Vacant</p>
+          <h2 id="vacantSeats">0</h2>
+          <span class="stat-sub green">Available</span>
         </div>
         <div class="stat-icon green">✔</div>
-    </div>
+      </div>
 
-    <!-- 🔥 NEW HALF DAY CARD -->
-    <div class="stat-card clickable" onclick="openHalfDayForm()">
+      <!-- 🔥 NEW HALF DAY CARD -->
+      <div class="stat-card clickable" onclick="openHalfDayForm()">
         <div class="stat-left">
-            <p class="stat-title">Half Day Students</p>
-            <h2 id="halfDayCount">0</h2>
-            <span class="stat-sub blue">Morning / Evening</span>
+          <p class="stat-title">Half Day Students</p>
+          <h2 id="halfDayCount">0</h2>
+          <span class="stat-sub blue">Morning / Evening</span>
         </div>
         <div class="stat-icon blue">⏱</div>
+      </div>
     </div>
 
-</div>
-
-
-<div class="dashboard-main">
-
-    <!--new table creation-->
-    <div class="alert-card">
+    <div class="dashboard-main">
+      <!--new table creation-->
+      <div class="alert-card">
         <div class="alert-header">
-            <h3>Subscription Alerts</h3>
-            <p class="subtitle">Pending actions for students</p>
+          <h3>Subscription Alerts</h3>
+          <p class="subtitle">Pending actions for students</p>
         </div>
 
         <div id="expiryBody" class="alert-list"></div>
 
         <div class="view-all" onclick="toggleViewAll()">View All Alerts</div>
-    </div>
+      </div>
 
-    <!--new seat layout-->
-    <div class="seat-card">
+      <!--new seat layout-->
+      <div class="seat-card">
         <div class="seat-card-header">
-            <div>
-                <h3>Seat Layout</h3>
-                <p class="subtitle">Fill here your fav seat...</p>
-            </div>
+          <div>
+            <h3>Seat Layout</h3>
+            <p class="subtitle">Fill here your fav seat...</p>
+          </div>
 
-            <div class="seat-legend">
-                <span><i class="fa-solid fa-circle booked"></i> Booked</span>
-                <span><i class="fa-solid fa-circle vacant"></i> Vacant</span>
-            </div>
+          <div class="seat-legend">
+            <span><i class="fa-solid fa-circle booked"></i> Booked</span>
+            <span><i class="fa-solid fa-circle vacant"></i> Vacant</span>
+          </div>
         </div>
 
         <div class="seat-container" id="seatContainer"></div>
+      </div>
     </div>
 
-</div>
-
-
-<!--Booking model-->
-<div id="bookingModal" class="modal">
-    <div class="modal-content">
+    <!--Booking model-->
+    <div id="bookingModal" class="modal">
+      <div class="modal-content">
         <h3>Book Seat <span id="seatNo"></span></h3>
 
-        <input type="text" id="name" placeholder="Student Name">
-        <input type="text" id="phone" placeholder="Phone Number">
-        <input type="number" id="amount" value="700">
+        <input type="text" id="name" placeholder="Student Name" />
+        <input type="text" id="phone" placeholder="Phone Number" />
+        <input type="number" id="amount" value="700" />
 
         <button onclick="confirmBooking()">Confirm Booking</button>
         <button class="close" onclick="closeModal()">Cancel</button>
+      </div>
     </div>
-</div>
 
+    <!-- Booking Success Modal -->
+    <div id="bookingSuccessModal" class="modal">
+      <div class="modal-content booking-success">
+        <h3>Booking Confirmed ✅</h3>
 
-<!--Vacate model-->
-<div id="studentModal" class="modal">
-    <div class="modal-content">
+        <div class="booking-details">
+          <p>
+            <strong>Student:</strong>
+            <span id="successStudentName"></span>
+          </p>
+
+          <p>
+            <strong>Phone:</strong>
+            <span id="successStudentPhone"></span>
+          </p>
+
+          <p>
+            <strong>Seat:</strong>
+            <span id="successSeatNumber"></span>
+          </p>
+          <p>
+            <strong>Expiry Date:</strong>
+            <span id="successExpiryDate"></span>
+          </p>
+          <p>
+            <strong>Booking Date:</strong>
+            <span id="successBookingDate"></span>
+          </p>
+
+          <p>
+            <strong>Amount:</strong>
+            ₹<span id="successAmount"></span>
+          </p>
+        </div>
+
+        <button onclick="sendBookingOnWhatsApp()">📱 Send on WhatsApp</button>
+
+        <button class="close" onclick="closeBookingSuccessPopup()">
+          Close
+        </button>
+      </div>
+    </div>
+
+    <!--Vacate model-->
+    <div id="studentModal" class="modal">
+      <div class="modal-content">
         <h3>Seat <span id="detailSeatNo"></span> – Student Details</h3>
 
         <label>Name</label>
-        <input type="text" id="detailName">
+        <input type="text" id="detailName" />
 
         <label>Phone</label>
-        <input type="text" id="detailPhone">
+        <input type="text" id="detailPhone" />
 
         <label>Joined On</label>
-        <input type="date" id="detailJoinDate" disabled>
+        <input type="date" id="detailJoinDate" disabled />
 
         <label>Expiry Date</label>
-        <input type="date" id="detailExpireDate">
+        <input type="date" id="detailExpireDate" />
 
         <label>Amount Paid</label>
-        <input type="number" id="detailAmount">
+        <input type="number" id="detailAmount" />
 
         <label>Seat Number</label>
         <select id="detailSeatNumber"></select>
@@ -127,46 +166,45 @@
         <button onclick="updateStudent()">Update</button>
         <button onclick="vacateSeat()">Vacate</button>
         <button class="close" onclick="closeStudentModal()">Cancel</button>
+      </div>
     </div>
-</div>
 
-
-
-
-
-<!-- MOBILE FOOTER NAV -->
-<div class="mobile-footer">
-    <div class="nav-item active" onclick="goTo('/dashboard.html')">
+    <!-- MOBILE FOOTER NAV -->
+    <div class="mobile-footer">
+      <div class="nav-item active" onclick="goTo('/dashboard.html')">
         <i class="fa-solid fa-house"></i>
         <span>Home</span>
-    </div>
+      </div>
 
-    <div class="nav-item" onclick="goTo('/billing.html')">
+      <div class="nav-item" onclick="goTo('/billing.html')">
         <i class="fa-solid fa-wallet"></i>
         <span>Billing</span>
-    </div>
+      </div>
 
-    <div class="nav-item" onclick="goTo('/students.html')">
+      <div class="nav-item" onclick="goTo('/students.html')">
         <i class="fa-solid fa-user-graduate"></i>
         <span>Students</span>
-    </div>
+      </div>
 
-    <div class="nav-item" onclick="goTo('/profile.html')">
+      <div class="nav-item" onclick="goTo('/profile.html')">
         <i class="fa-solid fa-user"></i>
         <span>Profile</span>
+      </div>
     </div>
-</div>
 
+    <script src="js/dashboard.js"></script>
+    <script src="js/newheader.js"></script>
+    <script>
+      fetch("/newheader.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("headerContainer").innerHTML = html;
 
-<script src="js/dashboard.js"></script>
-<script>
-    fetch("/newheader.html")
-      .then(res => res.text())
-      .then(html => document.getElementById("headerContainer").innerHTML = html);
-</script>
-<script src="js/newheader.js"></script>
-</body>
+          initHeader();
+        })
+        .catch((err) => {
+          console.error("Header loading failed:", err);
+        });
+    </script>
+  </body>
 </html>
-
-
-

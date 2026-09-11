@@ -3,7 +3,6 @@
 ========================= */
 
 @media (max-width: 768px) {
-
   /* Page wrapper */
   .content {
     padding: 16px;
@@ -26,7 +25,7 @@
     border-radius: 16px;
     padding: 16px;
     margin-bottom: 16px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
   }
 
   .card h3 {

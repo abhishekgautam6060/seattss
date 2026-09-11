@@ -1,68 +1,70 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Profile Details</title>
-    <link rel="stylesheet" href="css/dashboard.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/profile.css">
-    <script src="https://kit.fontawesome.com/70513bf846.js" crossorigin="anonymous"></script>
-</head>
-<body>
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/profile.css" />
+    <script
+      src="https://kit.fontawesome.com/70513bf846.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div id="headerContainer"></div>
 
-<div id="headerContainer"></div>
-
-<div class="content">
-    <button class="back-btn" onclick="goToDashboard()">
+    <div class="content">
+      <button class="back-btn" onclick="goToDashboard()">
         ← Back to Dashboard
-    </button>
-    <h2>Profile Details</h2>
+      </button>
+      <h2>Profile Details</h2>
 
-    <div class="card">
+      <div class="card">
         <h3>Admin Information</h3>
-        <p><b>Name:</b> <span id="adminName"></span></p>
+        <p><b>Name:</b><span id="name"></span></p>
         <p><b>Phone:</b> <span id="adminPhone"></span></p>
-    </div>
+      </div>
 
-    <div class="card">
+      <div class="card">
         <h3>Library Information</h3>
         <p><b>Library Name:</b> <span id="libraryName"></span></p>
         <p><b>Total Seats:</b> <span id="totalSeats"></span></p>
+      </div>
     </div>
-</div>
 
-
-<!-- MOBILE FOOTER NAV -->
-<div class="mobile-footer">
-    <div class="nav-item" onclick="goTo('/dashboard.html')">
+    <!-- MOBILE FOOTER NAV -->
+    <div class="mobile-footer">
+      <div class="nav-item" onclick="goTo('/dashboard.html')">
         <i class="fa-solid fa-house"></i>
         <span>Home</span>
-    </div>
+      </div>
 
-    <div class="nav-item" onclick="goTo('/billing.html')">
+      <div class="nav-item" onclick="goTo('/billing.html')">
         <i class="fa-solid fa-wallet"></i>
         <span>Billing</span>
-    </div>
+      </div>
 
-    <div class="nav-item" onclick="goTo('/students.html')">
+      <div class="nav-item" onclick="goTo('/students.html')">
         <i class="fa-solid fa-user-graduate"></i>
         <span>Students</span>
-    </div>
+      </div>
 
-    <div class="nav-item active" onclick="goTo('/profile.html')">
+      <div class="nav-item active" onclick="goTo('/profile.html')">
         <i class="fa-solid fa-user"></i>
         <span>Profile</span>
+      </div>
     </div>
-</div>
 
-
-<script>
-    fetch("/newheader.html")
-      .then(res => res.text())
-      .then(html => document.getElementById("headerContainer").innerHTML = html);
-</script>
-<script src="js/newheader.js"></script>
-<script src="js/profile.js"></script>
-
-</body>
+    <script>
+      fetch("/newheader.html")
+        .then((res) => res.text())
+        .then(
+          (html) =>
+            (document.getElementById("headerContainer").innerHTML = html)
+        );
+    </script>
+    <script src="js/newheader.js"></script>
+    <script src="js/profile.js"></script>
+  </body>
 </html>

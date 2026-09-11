@@ -1,70 +1,62 @@
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Library Seat Manager</title>
-    <link rel="stylesheet" href="css/newheader.css">
-</head>
-<body>
-<header class="app-header">
+    <link rel="stylesheet" href="css/newheader.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <!-- LEFT -->
+      <div class="header-left" onclick="goToDashboard()">
+        <img src="images/libManage.png" alt="Library Logo" class="logo" />
+        <span class="library-title" id="librarytitle">Success Library</span>
+      </div>
 
-    <!-- LEFT -->
-    <div class="header-left" onclick="goToDashboard()">
-        <img
-                src="images/logo.png"
-                alt="Library Logo"
-                class="logo"
-        />
-        <span class="library-title">Success Library</span>
-    </div>
-
-    <!-- CENTER NAV -->
-    <nav class="header-nav">
+      <!-- CENTER NAV -->
+      <nav class="header-nav">
         <a href="/dashboard.html" class="nav-link">Dashboard</a>
         <a href="/students.html" class="nav-link">Students</a>
         <a href="/billing.html" class="nav-link">Billing</a>
-        <a href="/inventory.html" class="nav-link disabled" >Inventory</a>
-    </nav>
+        <a href="/inventory.html" class="nav-link disabled">Inventory</a>
+      </nav>
 
-    <!-- RIGHT PROFILE -->
-    <div class="header-right">
-
+      <!-- RIGHT PROFILE -->
+      <div class="header-right">
         <!-- MOBILE HAMBURGER -->
         <div class="mobile-menu-btn" onclick="toggleMobileMenu()">
-            <i class="fa-solid fa-bars"></i>
+          <i class="fa-solid fa-bars"></i>
         </div>
 
         <!-- DESKTOP PROFILE -->
         <div class="profile-wrapper desktop-only">
-            <div class="profile-info" onclick="toggleProfileMenu()">
-                <div class="profile-text">
-                    <strong id="adminName">Admin User</strong>
-                </div>
-                <img src="images/user.png" class="avatar"/>
+          <div class="profile-info" onclick="toggleProfileMenu()">
+            <div class="profile-text">
+              <strong id="adminName">Admin User</strong>
             </div>
+            <img src="images/user.png" class="avatar" />
+          </div>
 
-            <div id="profileMenu" class="profile-menu">
-                <a href="/profile.html">Profile Details</a>
-                <a href="/students.html">Students</a>
-                <a href="/billing.html">Bills & Payments</a>
-                <hr />
-                <a onclick="logout()">Logout</a>
-            </div>
+          <div id="profileMenu" class="profile-menu">
+            <a href="/profile.html">Profile Details</a>
+            <a href="/students.html">Students</a>
+            <a href="/billing.html">Bills & Payments</a>
+            <hr />
+            <a onclick="logout()">Logout</a>
+          </div>
         </div>
+      </div>
 
-    </div>
-
-    <!-- MOBILE DROPDOWN -->
-    <div id="mobileMenu" class="mobile-menu hidden">
+      <!-- MOBILE DROPDOWN -->
+      <div id="mobileMenu" class="mobile-menu hidden">
         <a href="/profile.html">Profile</a>
         <a href="/students.html">Students</a>
         <a href="/billing.html">Billing</a>
-        <hr>
+        <hr />
         <a onclick="logout()">Logout</a>
-    </div>
+      </div>
+    </header>
 
-</header>
-
-
-<script src="js/newheader.js"></script>
-</body>
+    <script src="js/newheader.js"></script>
+  </body>
+</html>

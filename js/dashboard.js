@@ -5,16 +5,18 @@ let allAlerts = [];
 let showAllAlerts = false;
 let currentLibraryId = null;
 
-let CURRENT_LIBRARY_ID =
-  localStorage.getItem("LIBRARY_ID")
-    ? Number(localStorage.getItem("LIBRARY_ID"))
-    : null;
+let CURRENT_LIBRARY_ID = localStorage.getItem("LIBRARY_ID")
+  ? Number(localStorage.getItem("LIBRARY_ID"))
+  : null;
+
+let LIBRARY_NAME = localStorage.getItem("LIBRARY_NAME")
+  ? String(localStorage.getItem("LIBRARY_NAME"))
+  : null;
 
 console.log("✅ dashboard.js loaded");
 
-const HOST_URL ="https://seat-manager-backend-production-bb04.up.railway.app";
 // const HOST_URL ="https://seat-manager-backend-production.up.railway.app";
-
+const HOST_URL = "http://localhost:8080";
 
 function getAuthHeaders() {
   const token = localStorage.getItem("TOKEN");
@@ -27,20 +29,18 @@ function getAuthHeaders() {
 
   return {
     "Content-Type": "application/json",
-    "Authorization": "Bearer " + token
+    Authorization: "Bearer " + token,
   };
 }
-
 
 /*********************************
  * WINDOW LOAD (ONLY ONE)
  *********************************/
 
- const IS_DASHBOARD_PAGE =
-   window.location.pathname.includes("dashboard.html");
+const IS_DASHBOARD_PAGE = window.location.pathname.includes("dashboard.html");
 
 window.onload = function () {
-    if (!IS_DASHBOARD_PAGE) return;
+  if (!IS_DASHBOARD_PAGE) return;
   console.log("🚀 window.onload triggered");
 
   // Hide modals safely
@@ -49,65 +49,65 @@ window.onload = function () {
 
   // Check library
   checkLibraryAndLoad();
-//  loadingDashboardCards();
-//  loadExpiryNotifications();
+  //  loadingDashboardCards();
+  //  loadExpiryNotifications();
 };
-
 
 /*********************************
  * LIBRARY + SEAT FLOW
  *********************************/
 function checkLibraryAndLoad() {
   fetch(`${HOST_URL}/api/libraries/exists`, {
-    headers: getAuthHeaders()
+    headers: getAuthHeaders(),
   })
-      .then(res => {
-        console.log("📡 ${HOST_URL}/api/libraries/exists status:", res.status);
-        if (!res.ok) throw new Error("Library exists API failed");
-        return res.json();
-      })
-      .then(data => {
-        console.log("📚 Library exists response:", data);
+    .then((res) => {
+      console.log("📡 ${HOST_URL}/api/libraries/exists status:", res.status);
+      if (!res.ok) throw new Error("Library exists API failed");
+      return res.json();
+    })
+    .then((data) => {
+      console.log("📚 Library exists response:", data);
 
-        if (!data.exists) {
-          console.warn("➡️ No library found, redirecting...");
-          window.location.href = "/create-library.html";
-          return;
-        }
+      if (!data.exists) {
+        console.warn("➡️ No library found, redirecting...");
+        window.location.href = "/create-library.html";
+        return;
+      }
 
-        // ✅ STORE LIBRARY ID GLOBALLY
-            localStorage.setItem("LIBRARY_ID", data.libraryId);
-            localStorage.setItem("LIBRARY_NAME", data.libraryName);
+      // ✅ STORE LIBRARY ID GLOBALLY
+      localStorage.setItem("LIBRARY_ID", data.libraryId);
+      localStorage.setItem("LIBRARY_NAME", data.libraryName);
+      LIBRARY_NAME = data.libraryName;
 
-        const libraryId = data.libraryId;
-        console.log("🏛 Library ID:", libraryId);
+      const libraryId = data.libraryId;
+      console.log("🏛 Library ID:", libraryId);
+      console.log("🏛 Library Name :", LIBRARY_NAME);
 
-        loadSeats(libraryId);
-        loadingDashboardCards();
-        loadExpiryNotifications();
-      })
-      .catch(err => {
-        console.error("❌ Library exists check failed", err);
-      });
-  }
+      loadSeats(libraryId);
+      loadingDashboardCards();
+      loadExpiryNotifications();
+    })
+    .catch((err) => {
+      console.error("❌ Library exists check failed", err);
+    });
+}
 
 function loadSeats(libraryId) {
   console.log("🪑 Fetching seats for library:", libraryId);
   fetch(`${HOST_URL}/api/seats/library/${libraryId}`, {
-    headers: getAuthHeaders()
+    headers: getAuthHeaders(),
   })
-    .then(res => {
+    .then((res) => {
       console.log("📡 Seats API status:", res.status);
       return res.json();
     })
-    .then(seats => {
+    .then((seats) => {
       console.log("🪑 Seats received:", seats.length);
       console.log(seats);
       renderSeats(seats);
     })
-    .catch(err => console.error("❌ Seat fetch failed", err));
+    .catch((err) => console.error("❌ Seat fetch failed", err));
 }
-
 
 /*********************************
  * SEAT RENDERING
@@ -128,7 +128,7 @@ function renderSeats(seats) {
       const isReverse = Math.floor(index / seatsPerRow) % 2 !== 0;
       const finalRow = isReverse ? [...row].reverse() : row;
 
-      finalRow.forEach(s => {
+      finalRow.forEach((s) => {
         const div = document.createElement("div");
         div.className = "seat";
         div.innerText = s.seatNumber;
@@ -149,78 +149,69 @@ function renderSeats(seats) {
   });
 }
 
-
 /*********************************
  * DASHBOARD COUNTS
  *********************************/
 
- function loadingDashboardCards() {
+function loadingDashboardCards() {
+  const CURRENT_LIBRARY_ID = localStorage.getItem("LIBRARY_ID")
+    ? Number(localStorage.getItem("LIBRARY_ID"))
+    : null;
 
-  const CURRENT_LIBRARY_ID =
-    localStorage.getItem("LIBRARY_ID")
-      ? Number(localStorage.getItem("LIBRARY_ID"))
-      : null;
-
-    if (!CURRENT_LIBRARY_ID) {
-      alert("Library not loaded. Please refresh.");
-      return;
-    }
-    fetch(`${HOST_URL}/api/dashboards/${CURRENT_LIBRARY_ID}`, {
-      headers: getAuthHeaders()
-    })    
-  .then(res => res.json())
-  .then(data => {
-    console.log("📊 Dashboard stats loaded", data);
-    console.log("📊 Dashboard stats loaded", data);
-    document.getElementById("totalSeats").innerText = data.totalSeats;
-    document.getElementById("filledSeats").innerText = data.filledSeats;
-    document.getElementById("vacantSeats").innerText = data.vacantSeats;
-    document.getElementById("halfDayCount").innerText = data.halfDayStudents;
+  if (!CURRENT_LIBRARY_ID) {
+    alert("Library not loaded. Please refresh.");
+    return;
+  }
+  fetch(`${HOST_URL}/api/dashboards/${CURRENT_LIBRARY_ID}`, {
+    headers: getAuthHeaders(),
   })
-  .catch(err => console.error("❌ Dashboard stats failed", err));
-
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("📊 Dashboard stats loaded", data);
+      console.log("📊 Dashboard stats loaded", data);
+      document.getElementById("totalSeats").innerText = data.totalSeats;
+      document.getElementById("filledSeats").innerText = data.filledSeats;
+      document.getElementById("vacantSeats").innerText = data.vacantSeats;
+      document.getElementById("halfDayCount").innerText = data.halfDayStudents;
+    })
+    .catch((err) => console.error("❌ Dashboard stats failed", err));
 }
-
 
 /*********************************
  Expire Notifications
  *********************************/
 
-
 function loadExpiryNotifications() {
+  console.log(" expiry notification triggered ");
 
-console.log(" expiry notification triggered ");
+  const CURRENT_LIBRARY_ID = localStorage.getItem("LIBRARY_ID")
+    ? Number(localStorage.getItem("LIBRARY_ID"))
+    : null;
 
- const CURRENT_LIBRARY_ID =
-    localStorage.getItem("LIBRARY_ID")
-      ? Number(localStorage.getItem("LIBRARY_ID"))
-      : null;
+  if (!CURRENT_LIBRARY_ID) {
+    alert("Library not loaded. Please refresh.");
+    return;
+  }
 
-    if (!CURRENT_LIBRARY_ID) {
-      alert("Library not loaded. Please refresh.");
-      return;
-    }
+  Promise.all([
+    fetch(`${HOST_URL}/api/student/expiring-soon/${CURRENT_LIBRARY_ID}`, {
+      headers: getAuthHeaders(),
+    }).then((r) => r.json()),
 
-    Promise.all([
-      fetch(`${HOST_URL}/api/student/expiring-soon/${CURRENT_LIBRARY_ID}`, {
-        headers: getAuthHeaders()
-      })      
-        .then(r => r.json()),
+    fetch(`${HOST_URL}/api/student/expired/${CURRENT_LIBRARY_ID}`, {
+      headers: getAuthHeaders(),
+    }).then((r) => r.json()),
+  ]).then(([expiring, expired]) => {
+    console.log("Expiring Data:", expiring);
+    console.log("Expired Data:", expired);
 
-        fetch(`${HOST_URL}/api/student/expired/${CURRENT_LIBRARY_ID}`, {
-          headers: getAuthHeaders()
-        })        
-        .then(r => r.json())
-    ])
-    .then(([expiring, expired]) => {
-
-      console.log("Expiring Data:", expiring);
-      console.log("Expired Data:", expired);
-
-      renderExpiryList([...expired, ...expiring]);
-    });
+    renderExpiryList([...expired, ...expiring]);
+  });
 }
 
+/*********************************
+ * RENDER EXPIRY LIST
+ *********************************/
 
 function renderExpiryList(data) {
   allAlerts = data;
@@ -228,11 +219,11 @@ function renderExpiryList(data) {
   const box = document.getElementById("expiryBody");
   box.innerHTML = "";
 
-   console.log(" Data ", data);
+  console.log(" Data ", data);
 
   const alertsToShow = showAllAlerts ? allAlerts : allAlerts.slice(0, 20);
 
-  alertsToShow.forEach(s => {
+  alertsToShow.forEach((s) => {
     const statusClass = getExpiryClass(s.expireDate);
 
     const div = document.createElement("div");
@@ -258,7 +249,9 @@ function renderExpiryList(data) {
 
       <div class="alert-actions">
         <button class="btn whatsapp"
-          onclick="sendReminder('${s.phone}', '${s.name}', ${s.seatNumber}, '${s.expiryDate}')">
+          onclick="sendReminder('${s.phone}', '${s.name}', ${s.seatNumber}, '${
+      s.expiryDate
+    }')">
           <i class="fa-brands fa-whatsapp"></i> WhatsApp
         </button>
 
@@ -271,9 +264,12 @@ function renderExpiryList(data) {
 
     box.appendChild(div);
   });
-   updateViewAllText();
+  updateViewAllText();
 }
 
+/*********************************
+ * WHATSAPP + CALL
+ *********************************/
 
 function sendReminder(phone, name, seat, expiry) {
   if (!phone) {
@@ -283,8 +279,7 @@ function sendReminder(phone, name, seat, expiry) {
 
   const cleanPhone = phone.replace(/\D/g, "");
 
-  const message =
-`Hello ${name} 👋
+  const message = `Hello ${name} 👋
 
 Your library seat (Seat No: ${seat})
 is expiring on ${expiry}.
@@ -299,10 +294,7 @@ Thank you 🙏`;
   window.open(url, "_blank");
 }
 
-
-
 function callPerson(phone) {
-
   if (!phone) {
     alert("Phone number not available");
     return;
@@ -317,10 +309,8 @@ function callPerson(phone) {
   window.location.href = `tel:+91${cleanPhone}`;
 }
 
-
-
 function getExpiryClass(expiryDateStr) {
- if (!expiryDateStr) return null;
+  if (!expiryDateStr) return null;
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -329,23 +319,20 @@ function getExpiryClass(expiryDateStr) {
   const expiry = new Date(year, month - 1, day);
   expiry.setHours(0, 0, 0, 0);
 
-  const diffDays = Math.floor(
-    (expiry - today) / (1000 * 60 * 60 * 24)
-  );
+  const diffDays = Math.floor((expiry - today) / (1000 * 60 * 60 * 24));
 
-  console.log(diffDays)
+  console.log(diffDays);
 
   if (diffDays < 0) {
-    return "expired";           // 🔴 already expired
+    return "expired"; // 🔴 already expired
   } else if (diffDays === 0) {
-    return "expired";           // 🔴 expires today
+    return "expired"; // 🔴 expires today
   } else if (diffDays <= 3) {
-    return "expiring-soon";     // 🟠 1–3 days left
+    return "expiring-soon"; // 🟠 1–3 days left
   }
 
   return null;
 }
-
 
 function updateViewAllText() {
   const btn = document.querySelector(".view-all");
@@ -353,54 +340,143 @@ function updateViewAllText() {
 }
 
 /*********************************
-  * BOOK SEAT
-  *********************************/
- let selectedSeat = null;
+ * BOOK SEAT
+ *********************************/
+let selectedSeat = null;
 
- function bookSeat(seatNumber) {
-   selectedSeat = seatNumber;
-   document.getElementById("seatNo").innerText = seatNumber;
-   showModal("bookingModal");
- }
+function bookSeat(seatNumber) {
+  selectedSeat = seatNumber;
+  document.getElementById("seatNo").innerText = seatNumber;
+  showModal("bookingModal");
+}
 
- function confirmBooking() {
+function confirmBooking() {
+  const CURRENT_LIBRARY_ID = localStorage.getItem("LIBRARY_ID")
+    ? Number(localStorage.getItem("LIBRARY_ID"))
+    : null;
 
- const CURRENT_LIBRARY_ID =
-   localStorage.getItem("LIBRARY_ID")
-     ? Number(localStorage.getItem("LIBRARY_ID"))
-     : null;
+  if (!CURRENT_LIBRARY_ID) {
+    alert("Library not loaded. Please refresh.");
+    return;
+  }
 
-   if (!CURRENT_LIBRARY_ID) {
-     alert("Library not loaded. Please refresh.");
-     return;
-   }
+  const studentName = value("name");
+  const studentPhone = value("phone");
+  const amountPaid = value("amount");
 
-   const payload = {
-     libraryId: CURRENT_LIBRARY_ID,   // 🔥 REQUIRED
-     seatNumber: selectedSeat,
-     name: value("name"),
-     phone: value("phone"),
-     amountPaid: value("amount"),
-     studentType: "FULL_DAY"
-   };
+  const payload = {
+    libraryId: CURRENT_LIBRARY_ID, // 🔥 REQUIRED
+    seatNumber: selectedSeat,
+    name: value("name"),
+    phone: value("phone"),
+    amountPaid: value("amount"),
+    studentType: "FULL_DAY",
+  };
 
-   console.log("📦 Booking payload:", payload);
+  console.log("📦 Booking payload:", payload);
 
-   fetch(`${HOST_URL}/api/book`, {
+  fetch(`${HOST_URL}/api/book`, {
     method: "POST",
     headers: getAuthHeaders(),
-    body: JSON.stringify(payload)
-    })  
-     .then(res => {
-       if (!res.ok) throw new Error("Booking failed");
-       return res.text();
-     })
-     .then(msg => {
-       console.log("✅ Booking success:", msg);
-       location.reload();
-     })
-     .catch(err => alert(err.message));
- }
+    body: JSON.stringify(payload),
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error("Booking failed");
+      console.log("Booked detail:", res);
+      return res.json();
+    })
+    .then((msg) => {
+      console.log("✅ Booking success:", msg);
+
+      const student = msg.student;
+
+      const bookingDate = student.bookingDate;
+      const expiryDate = student.expiryDate;
+      console.log("📅 Booking Date:", bookingDate);
+      console.log("expiry Date :", expiryDate);
+
+      // Close booking modal
+      closeModal();
+
+      // Show booking success popup
+      showBookingSuccessPopup({
+        name: studentName,
+        phone: studentPhone,
+        seatNumber: selectedSeat,
+        amount: amountPaid,
+        bookingDate: student.bookingDate,
+        expiryDate: student.expiryDate,
+      });
+    })
+    .catch((err) => {
+      console.error("❌ Booking error:", err);
+      alert(err.message);
+    });
+}
+
+let latestBooking = null;
+
+function showBookingSuccessPopup(booking) {
+  latestBooking = booking;
+
+  document.getElementById("successStudentName").textContent = booking.name;
+
+  document.getElementById("successStudentPhone").textContent = booking.phone;
+
+  document.getElementById("successSeatNumber").textContent = booking.seatNumber;
+
+  document.getElementById("successAmount").textContent = booking.amount;
+  document.getElementById("successBookingDate").textContent =
+    booking.bookingDate;
+  document.getElementById("successExpiryDate").textContent = booking.expiryDate;
+
+  document.getElementById("bookingSuccessModal").style.display = "flex";
+}
+
+function closeBookingSuccessPopup() {
+  document.getElementById("bookingSuccessModal").style.display = "none";
+
+  // Reload after closing
+  location.reload();
+}
+
+function sendBookingOnWhatsApp() {
+  if (!latestBooking) {
+    alert("Booking details not available.");
+    return;
+  }
+
+  let phone = latestBooking.phone.trim();
+
+  // Remove spaces, -, brackets, etc.
+  phone = phone.replace(/\D/g, "");
+
+  // If Indian 10-digit number, add +91
+  if (phone.length === 10) {
+    phone = "91" + phone;
+  }
+
+  const message = `
+Hello ${latestBooking.name} 👋
+
+Your seat booking has been confirmed successfully.
+
+📚 Seat Number: ${latestBooking.seatNumber}
+💰 Amount Paid: ₹${latestBooking.amount}
+Date Of Joining: ${latestBooking.bookingDate}
+Expiry Date: ${latestBooking.expiryDate}
+
+Please send your Adhar-Card Front & Back Photo.
+
+Thank you for choosing ${LIBRARY_NAME}! 😊
+  `.trim();
+
+  const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(
+    message
+  )}`;
+
+  window.open(whatsappUrl, "_blank");
+}
 
 /*********************************
  * STUDENT MODAL
@@ -408,41 +484,41 @@ function updateViewAllText() {
 let currentSeatNumber = null;
 let currentStudentId = null;
 
-
 function openStudentModal(seatNumber) {
+  const CURRENT_LIBRARY_ID = localStorage.getItem("LIBRARY_ID")
+    ? Number(localStorage.getItem("LIBRARY_ID"))
+    : null;
 
-const CURRENT_LIBRARY_ID =
-   localStorage.getItem("LIBRARY_ID")
-     ? Number(localStorage.getItem("LIBRARY_ID"))
-     : null;
-
-   if (!CURRENT_LIBRARY_ID) {
-     alert("Library not loaded. Please refresh.");
-     return;
-   }
+  if (!CURRENT_LIBRARY_ID) {
+    alert("Library not loaded. Please refresh.");
+    return;
+  }
 
   currentSeatNumber = seatNumber;
 
-  fetch(`${HOST_URL}/api/student/seat/${seatNumber}/library/${CURRENT_LIBRARY_ID}`, {
-    headers: getAuthHeaders()
-      })  
-      .then(res => {
-        if (res.status === 404) {
-          alert("This seat is vacant.");
-          return null;
-        }
-        return res.json();
-      })
-      .then(student => {
-        if (!student) return;
-         currentStudentId = student.id;
+  fetch(
+    `${HOST_URL}/api/student/seat/${seatNumber}/library/${CURRENT_LIBRARY_ID}`,
+    {
+      headers: getAuthHeaders(),
+    }
+  )
+    .then((res) => {
+      if (res.status === 404) {
+        alert("This seat is vacant.");
+        return null;
+      }
+      return res.json();
+    })
+    .then((student) => {
+      if (!student) return;
+      currentStudentId = student.id;
 
-        fillStudentModal(student);
-        loadAvailableSeats(currentSeatNumber);
-        showModal("studentModal");
-        console.log("✅ Student data loaded for seat", seatNumber, student);
-      })
-      .catch(err => console.error(err));
+      fillStudentModal(student);
+      loadAvailableSeats(currentSeatNumber);
+      showModal("studentModal");
+      console.log("✅ Student data loaded for seat", seatNumber, student);
+    })
+    .catch((err) => console.error(err));
 }
 
 function fillStudentModal(student) {
@@ -456,96 +532,93 @@ function fillStudentModal(student) {
   console.log("Student details loaded into modal:", student);
 }
 
-
 /*********************************
  // Vacate Button (Reuse Existing API)
  *********************************/
 
 function vacateSeat() {
+  const CURRENT_LIBRARY_ID = localStorage.getItem("LIBRARY_ID")
+    ? Number(localStorage.getItem("LIBRARY_ID"))
+    : null;
 
-const CURRENT_LIBRARY_ID =
-   localStorage.getItem("LIBRARY_ID")
-     ? Number(localStorage.getItem("LIBRARY_ID"))
-     : null;
-
-   if (!CURRENT_LIBRARY_ID) {
-     alert("Library not loaded. Please refresh.");
-     return;
-   }
-   fetch(`${HOST_URL}/api/vacate/libraryId/${CURRENT_LIBRARY_ID}/seatId/${currentSeatNumber}`, {
-    method: "POST",
-    headers: getAuthHeaders()
-        })  
-        .then(() => {
-            closeStudentModal();
-            refreshUI();
-        });
-        console.log(`${HOST_URL}/api/vacate/libraryId/${CURRENT_LIBRARY_ID}/seatId/${currentSeatNumber}`)
+  if (!CURRENT_LIBRARY_ID) {
+    alert("Library not loaded. Please refresh.");
+    return;
+  }
+  fetch(
+    `${HOST_URL}/api/vacate/libraryId/${CURRENT_LIBRARY_ID}/seatId/${currentSeatNumber}`,
+    {
+      method: "POST",
+      headers: getAuthHeaders(),
+    }
+  ).then(() => {
+    closeStudentModal();
+    refreshUI();
+  });
+  console.log(
+    `${HOST_URL}/api/vacate/libraryId/${CURRENT_LIBRARY_ID}/seatId/${currentSeatNumber}`
+  );
 }
 
 /*********************************
  // Update Button
  *********************************/
 function updateStudent() {
+  const CURRENT_LIBRARY_ID = localStorage.getItem("LIBRARY_ID")
+    ? Number(localStorage.getItem("LIBRARY_ID"))
+    : null;
 
-const CURRENT_LIBRARY_ID =
-   localStorage.getItem("LIBRARY_ID")
-     ? Number(localStorage.getItem("LIBRARY_ID"))
-     : null;
+  if (!CURRENT_LIBRARY_ID) {
+    alert("Library not loaded. Please refresh.");
+    return;
+  }
+  const payload = {
+    name: document.getElementById("detailName").value,
+    phone: document.getElementById("detailPhone").value,
+    amountPaid: document.getElementById("detailAmount").value,
+    expireDate: document.getElementById("detailExpireDate").value,
+    seatNumber: parseInt(document.getElementById("detailSeatNumber").value),
+  };
 
-   if (!CURRENT_LIBRARY_ID) {
-     alert("Library not loaded. Please refresh.");
-     return;
-   }
-    const payload = {
-        name: document.getElementById("detailName").value,
-        phone: document.getElementById("detailPhone").value,
-        amountPaid: document.getElementById("detailAmount").value,
-        expireDate: document.getElementById("detailExpireDate").value,
-         seatNumber: parseInt(document.getElementById("detailSeatNumber").value)
-    };
-
-    fetch(`${HOST_URL}/api/student/${currentSeatNumber}/library/${CURRENT_LIBRARY_ID}`, {
+  fetch(
+    `${HOST_URL}/api/student/${currentSeatNumber}/library/${CURRENT_LIBRARY_ID}`,
+    {
       method: "PUT",
       headers: getAuthHeaders(),
-      body: JSON.stringify(payload)
-    })    
-    .then(res => {
-        if (!res.ok) throw new Error("Update failed");
-        return res.text();
+      body: JSON.stringify(payload),
+    }
+  )
+    .then((res) => {
+      if (!res.ok) throw new Error("Update failed");
+      return res.text();
     })
     .then(() => {
-        alert("Updated successfully");
-        closeStudentModal();
-        refreshUI();
+      alert("Updated successfully");
+      closeStudentModal();
+      refreshUI();
     })
-    .catch(err => alert(err.message));
+    .catch((err) => alert(err.message));
 }
 
-
-
 function loadAvailableSeats(currentSeat) {
+  const CURRENT_LIBRARY_ID = localStorage.getItem("LIBRARY_ID")
+    ? Number(localStorage.getItem("LIBRARY_ID"))
+    : null;
 
-const CURRENT_LIBRARY_ID =
-   localStorage.getItem("LIBRARY_ID")
-     ? Number(localStorage.getItem("LIBRARY_ID"))
-     : null;
+  if (!CURRENT_LIBRARY_ID) {
+    alert("Library not loaded. Please refresh.");
+    return;
+  }
 
-   if (!CURRENT_LIBRARY_ID) {
-     alert("Library not loaded. Please refresh.");
-     return;
-   }
-
-
-   fetch(`${HOST_URL}/api/seats/library/${CURRENT_LIBRARY_ID}`, {
-    headers: getAuthHeaders()
-    })  
-    .then(res => res.json())
-    .then(seats => {
+  fetch(`${HOST_URL}/api/seats/library/${CURRENT_LIBRARY_ID}`, {
+    headers: getAuthHeaders(),
+  })
+    .then((res) => res.json())
+    .then((seats) => {
       const select = document.getElementById("detailSeatNumber");
       select.innerHTML = "";
 
-      seats.forEach(seat => {
+      seats.forEach((seat) => {
         // show vacant seats + current seat
         if (!seat.occupied || seat.seatNumber === currentSeat) {
           const option = document.createElement("option");
@@ -560,8 +633,6 @@ const CURRENT_LIBRARY_ID =
     });
 }
 
-
-
 /*********************************
  * HELPERS
  *********************************/
@@ -571,7 +642,7 @@ function hideModal(id) {
 }
 
 function refreshUI() {
-    location.reload();
+  location.reload();
 }
 
 function showModal(id) {
@@ -594,9 +665,8 @@ function setText(id, val) {
 }
 
 function closeStudentModal() {
-    document.getElementById("studentModal").style.display = "none";
+  document.getElementById("studentModal").style.display = "none";
 }
-
 
 function closeModal() {
   document.getElementById("bookingModal").style.display = "none";
@@ -606,10 +676,8 @@ function toggleViewAll() {
   renderExpiryList(allAlerts);
 }
 
-
 function scrollToSeats() {
-  document.querySelector(".seat-card")
-    .scrollIntoView({ behavior: "smooth" });
+  document.querySelector(".seat-card").scrollIntoView({ behavior: "smooth" });
 }
 
 function openActiveFullDayStudents() {
@@ -619,7 +687,6 @@ function openActiveFullDayStudents() {
 function openHalfDayForm() {
   window.location.href = "/halfday-student.html";
 }
-
 
 /*********************************
  * MOBILE NAV

@@ -1,144 +1,149 @@
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Library Seat Manager</title>
-    <link rel="stylesheet" href="css/billing.css">
+    <link rel="stylesheet" href="css/billing.css" />
     <!--    <link rel="stylesheet" href="css/dashboard.css">-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/70513bf846.js" crossorigin="anonymous"></script>
-</head>
-<body>
-<div id="headerContainer"></div>
-<div class="billing-page">
-
-    <div class="billing-cards">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://kit.fontawesome.com/70513bf846.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div id="headerContainer"></div>
+    <div class="billing-page">
+      <div class="billing-cards">
         <div class="billing-card" id="revenueCard"></div>
         <div class="billing-card" id="expenseCard"></div>
         <div class="billing-card" id="profitCard"></div>
         <div class="billing-card" id="projectedCard"></div>
-    </div>
+      </div>
 
-    <!-- EXPENSE SECTION -->
-    <div class="billing-card">
-
+      <!-- EXPENSE SECTION -->
+      <div class="billing-card">
         <div class="billing-header">
-            <h3>Recent Expenditures</h3>
-            <button class="primary-btn" onclick="openExpenseModal()">
-                + Add Expense
-            </button>
+          <h3>Recent Expenditures</h3>
+          <button class="primary-btn" onclick="openExpenseModal()">
+            + Add Expense
+          </button>
         </div>
 
         <table class="expense-table">
-            <thead>
+          <thead>
             <tr>
-                <th>Category</th>
-                <th>Transaction Date</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Receipt</th>
-                <th>Actions</th>
+              <th>Category</th>
+              <th>Transaction Date</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Receipt</th>
+              <th>Actions</th>
             </tr>
-            </thead>
-            <tbody id="expenseBody"></tbody>
+          </thead>
+          <tbody id="expenseBody"></tbody>
         </table>
 
         <div id="expenseEmpty" class="empty-state hidden">
-            No expenses added yet
+          No expenses added yet
         </div>
-
+      </div>
     </div>
-</div>
 
-<!-- ADD EXPENSE MODAL -->
-<div id="expenseModal" class="modal hidden">
-    <div class="modal-content">
+    <!-- ADD EXPENSE MODAL -->
+    <div id="expenseModal" class="modal hidden">
+      <div class="modal-content">
         <h3>Add Expense</h3>
 
         <label>Category</label>
-        <input id="exCategory" placeholder="Rent / Electricity / Wifi">
+        <input id="exCategory" placeholder="Rent / Electricity / Wifi" />
 
         <label>Amount</label>
-        <input id="exAmount" type="number">
+        <input id="exAmount" type="number" />
 
         <label>Date</label>
-        <input id="exDate" type="date">
+        <input id="exDate" type="date" />
 
         <label>Status</label>
         <select id="exStatus">
-            <option value="PAID">Paid</option>
-            <option value="PENDING">Pending</option>
+          <option value="PAID">Paid</option>
+          <option value="PENDING">Pending</option>
         </select>
 
         <div class="modal-actions">
-            <button class="primary-btn" onclick="saveExpense()">Save</button>
-            <button class="btn-light" onclick="closeExpenseModal()">Cancel</button>
+          <button class="primary-btn" onclick="saveExpense()">Save</button>
+          <button class="btn-light" onclick="closeExpenseModal()">
+            Cancel
+          </button>
         </div>
+      </div>
     </div>
-</div>
 
-
-<!-- EDIT EXPENSE MODAL -->
-<div id="editExpenseModal" class="modal hidden">
-    <div class="modal-content">
+    <!-- EDIT EXPENSE MODAL -->
+    <div id="editExpenseModal" class="modal hidden">
+      <div class="modal-content">
         <h3>Edit Expense</h3>
 
-        <input type="hidden" id="editId">
+        <input type="hidden" id="editId" />
 
         <label>Category</label>
-        <input id="editCategory">
+        <input id="editCategory" />
 
         <label>Amount</label>
-        <input id="editAmount" type="number">
+        <input id="editAmount" type="number" />
 
         <label>Date</label>
-        <input id="editDate" type="date">
+        <input id="editDate" type="date" />
 
         <label>Status</label>
         <select id="editStatus">
-            <option value="PAID">Paid</option>
-            <option value="PENDING">Pending</option>
+          <option value="PAID">Paid</option>
+          <option value="PENDING">Pending</option>
         </select>
 
         <div class="modal-actions">
-            <button class="primary-btn" onclick="updateExpense()">Update</button>
-            <button class="btn-light" onclick="closeEditExpense()">Cancel</button>
+          <button class="primary-btn" onclick="updateExpense()">Update</button>
+          <button class="btn-light" onclick="closeEditExpense()">Cancel</button>
         </div>
+      </div>
     </div>
-</div>
 
-
-<!-- MOBILE FOOTER NAV -->
-<div class="mobile-footer">
-    <div class="nav-item" onclick="goTo('/dashboard.html')">
+    <!-- MOBILE FOOTER NAV -->
+    <div class="mobile-footer">
+      <div class="nav-item" onclick="goTo('/dashboard.html')">
         <i class="fa-solid fa-house"></i>
         <span>Home</span>
-    </div>
+      </div>
 
-    <div class="nav-item active" onclick="goTo('/billing.html')">
+      <div class="nav-item active" onclick="goTo('/billing.html')">
         <i class="fa-solid fa-wallet"></i>
         <span>Billing</span>
-    </div>
+      </div>
 
-    <div class="nav-item" onclick="goTo('/students.html')">
+      <div class="nav-item" onclick="goTo('/students.html')">
         <i class="fa-solid fa-user-graduate"></i>
         <span>Students</span>
-    </div>
+      </div>
 
-    <div class="nav-item" onclick="goTo('/profile.html')">
+      <div class="nav-item" onclick="goTo('/profile.html')">
         <i class="fa-solid fa-user"></i>
         <span>Profile</span>
+      </div>
     </div>
-</div>
 
+    <script src="js/newheader.js"></script>
+    <script src="js/billing.js"></script>
+    <script>
+      fetch("/newheader.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("headerContainer").innerHTML = html;
 
-<script>
-    fetch("/newheader.html")
-      .then(res => res.text())
-      .then(html => document.getElementById("headerContainer").innerHTML = html);
-</script>
-<script src="js/newheader.js"></script>
-<script src="js/billing.js"></script>
-</body>
+          initHeader();
+        })
+        .catch((err) => {
+          console.error("Header loading failed:", err);
+        });
+    </script>
+  </body>
 </html>
-

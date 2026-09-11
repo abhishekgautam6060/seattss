@@ -1,11 +1,9 @@
-let CURRENT_LIBRARY_ID =
-  localStorage.getItem("LIBRARY_ID")
-    ? Number(localStorage.getItem("LIBRARY_ID"))
-    : null;
+let CURRENT_LIBRARY_ID = localStorage.getItem("LIBRARY_ID")
+  ? Number(localStorage.getItem("LIBRARY_ID"))
+  : null;
 
-const HOST_URL = "https://seat-manager-backend-production-bb04.up.railway.app";
 // const HOST_URL = "https://seat-manager-backend-production.up.railway.app";
-
+const HOST_URL = "http://localhost:8080";
 
 /*********************************
  * AUTH HEADER HELPER
@@ -21,26 +19,25 @@ function getAuthHeaders() {
 
   return {
     "Content-Type": "application/json",
-    "Authorization": "Bearer " + token
+    Authorization: "Bearer " + token,
   };
 }
-
 
 /*********************************
  * LOAD HALF DAY STUDENTS
  *********************************/
 fetch(`${HOST_URL}/api/student/halfday/library/${CURRENT_LIBRARY_ID}`, {
-  headers: getAuthHeaders()
+  headers: getAuthHeaders(),
 })
-  .then(res => {
+  .then((res) => {
     if (!res.ok) return [];
     return res.json();
   })
-  .then(data => {
+  .then((data) => {
     const table = document.getElementById("halfDayTable");
     table.innerHTML = "";
 
-    data.forEach(s => {
+    data.forEach((s) => {
       const tr = document.createElement("tr");
 
       tr.innerHTML = `
@@ -62,8 +59,7 @@ fetch(`${HOST_URL}/api/student/halfday/library/${CURRENT_LIBRARY_ID}`, {
       table.appendChild(tr);
     });
   })
-  .catch(err => console.error("Half day load failed", err));
-
+  .catch((err) => console.error("Half day load failed", err));
 
 /*********************************
  * MODAL
@@ -76,7 +72,6 @@ function closeHalfDayModal() {
   document.getElementById("halfDayModal").classList.add("hidden");
 }
 
-
 /*********************************
  * SAVE HALF DAY STUDENT
  *********************************/
@@ -86,25 +81,24 @@ function saveHalfDayStudent() {
     phone: hdPhone.value,
     shift: hdShift.value,
     amountPaid: hdAmount.value,
-    expiryDate: hdExpiry.value
+    expiryDate: hdExpiry.value,
   };
 
   fetch(`${HOST_URL}/api/student/halfday`, {
     method: "POST",
     headers: getAuthHeaders(),
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   })
-  .then(res => {
-    if (!res.ok) throw new Error("Failed to save student");
-    return res.text();
-  })
-  .then(() => {
-    closeHalfDayModal();
-    location.reload();
-  })
-  .catch(err => alert(err.message));
+    .then((res) => {
+      if (!res.ok) throw new Error("Failed to save student");
+      return res.text();
+    })
+    .then(() => {
+      closeHalfDayModal();
+      location.reload();
+    })
+    .catch((err) => alert(err.message));
 }
-
 
 /*********************************
  * PROFILE
@@ -122,32 +116,30 @@ function formatDate(d) {
   return d ? new Date(d).toLocaleDateString() : "-";
 }
 
-
 /*********************************
  * CREATE HALF DAY STUDENT
  *********************************/
 function createHalfDayStudent() {
-
   const payload = {
     name: document.getElementById("hdName").value,
     phone: document.getElementById("hdPhone").value,
     amount: parseInt(document.getElementById("hdAmount").value),
     studentType: "HALF_DAY",
-    halfDaySlot: document.getElementById("hdSlot").value
+    halfDaySlot: document.getElementById("hdSlot").value,
   };
 
   fetch(`${HOST_URL}/api/student/create/library/${CURRENT_LIBRARY_ID}`, {
     method: "POST",
     headers: getAuthHeaders(),
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   })
-  .then(res => {
-    if (!res.ok) throw new Error("Failed to create student");
-    return res.text();
-  })
-  .then(() => {
-    closeHalfDayModal();
-    location.reload();
-  })
-  .catch(err => alert(err.message));
+    .then((res) => {
+      if (!res.ok) throw new Error("Failed to create student");
+      return res.text();
+    })
+    .then(() => {
+      closeHalfDayModal();
+      location.reload();
+    })
+    .catch((err) => alert(err.message));
 }
