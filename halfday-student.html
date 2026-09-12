@@ -1,149 +1,153 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Half Day Students</title>
 
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="css/students.css">
-    <link rel="stylesheet" href="css/halfday.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/70513bf846.js" crossorigin="anonymous"></script>
-</head>
-<body>
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <link rel="stylesheet" href="css/students.css" />
+    <link rel="stylesheet" href="css/halfday.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://kit.fontawesome.com/70513bf846.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div id="headerContainer"></div>
 
-<div id="headerContainer"></div>
-
-<div class="students-page">
-
-    <!-- LEFT PANEL -->
-    <div class="students-left">
-
+    <div class="students-page">
+      <!-- LEFT PANEL -->
+      <div class="students-left">
         <div class="students-header">
-            <div>
-                <h2>Half Day Students</h2>
-                <p class="subtitle">
-                    Morning & Evening shift members (No fixed seats)
-                </p>
-            </div>
+          <div>
+            <h2>Half Day Students</h2>
+            <p class="subtitle">
+              Morning & Evening shift members (No fixed seats)
+            </p>
+          </div>
 
-            <button class="primary-btn" onclick="openHalfDayModal()">
-                + Add Half Day Student
-            </button>
+          <button class="primary-btn" onclick="openHalfDayModal()">
+            + Add Half Day Student
+          </button>
         </div>
 
         <!-- FILTER TABS -->
         <div class="student-tabs">
-            <button class="tab active">All</button>
-            <button class="tab">Morning</button>
-            <button class="tab">Evening</button>
-            <button class="tab danger">Expired</button>
+          <button class="tab active">All</button>
+          <button class="tab">Morning</button>
+          <button class="tab">Evening</button>
+          <button class="tab danger">Expired</button>
         </div>
 
         <!-- TABLE -->
         <div class="student-table-wrapper">
-            <table class="student-table">
-                <thead>
-                <tr>
-                    <th>Student</th>
-                    <th>Phone</th>
-                    <th>Shift</th>
-                    <th>Expires</th>
-                    <th>Amount</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody id="halfDayTable"></tbody>
-            </table>
+          <table class="student-table">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Phone</th>
+                <th>Shift</th>
+                <th>Expires</th>
+                <th>Amount</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="halfDayTable"></tbody>
+          </table>
         </div>
+      </div>
 
-    </div>
-
-    <!-- RIGHT PANEL -->
-    <div class="students-right">
+      <!-- RIGHT PANEL -->
+      <div class="students-right">
         <div class="profile-card hidden" id="halfDayProfile">
-            <div class="profile-avatar">
-                <img src="/user.png">
+          <div class="profile-avatar">
+            <img src="/user.png" />
+          </div>
+
+          <h3 id="pName">—</h3>
+          <p class="profile-sub" id="pPhone">—</p>
+
+          <hr />
+
+          <div class="profile-details">
+            <div><span>Shift</span><strong id="pShift">—</strong></div>
+            <div><span>Joined</span><strong id="pJoined">—</strong></div>
+            <div>
+              <span>Expires</span>
+              <strong id="pExpire" class="danger">—</strong>
             </div>
-
-            <h3 id="pName">—</h3>
-            <p class="profile-sub" id="pPhone">—</p>
-
-            <hr>
-
-            <div class="profile-details">
-                <div><span>Shift</span><strong id="pShift">—</strong></div>
-                <div><span>Joined</span><strong id="pJoined">—</strong></div>
-                <div>
-                    <span>Expires</span>
-                    <strong id="pExpire" class="danger">—</strong>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
     </div>
 
-</div>
-
-<!-- ADD HALF DAY MODAL -->
-<div id="halfDayModal" class="modal hidden">
-    <div class="modal-content">
+    <!-- ADD HALF DAY MODAL -->
+    <div id="halfDayModal" class="modal hidden">
+      <div class="modal-content">
         <h3>Add Half Day Student</h3>
 
         <label>Name</label>
-        <input id="hdName">
+        <input id="hdName" />
 
         <label>Phone</label>
-        <input id="hdPhone">
+        <input id="hdPhone" />
 
         <label>Shift</label>
         <select id="hdSlot">
-            <option value="MORNING">Morning (6AM – 2PM)</option>
-            <option value="EVENING">Evening (2PM – 10PM)</option>
+          <option value="MORNING">Morning (6AM – 2PM)</option>
+          <option value="EVENING">Evening (2PM – 10PM)</option>
         </select>
 
         <label>Fees</label>
-        <input id="hdAmount" type="number" placeholder="400 / 500">
+        <input id="hdAmount" type="number" placeholder="400 / 500" />
 
         <div class="modal-actions">
-            <button class="primary-btn" onclick="createHalfDayStudent()">Save</button>
-            <button class="btn-light" onclick="closeHalfDayModal()">Cancel</button>
+          <button class="primary-btn" onclick="createHalfDayStudent()">
+            Save
+          </button>
+          <button class="btn-light" onclick="closeHalfDayModal()">
+            Cancel
+          </button>
         </div>
+      </div>
     </div>
-</div>
 
-
-<!-- MOBILE FOOTER NAV -->
-<div class="mobile-footer">
-    <div class="nav-item active" onclick="goTo('/dashboard.html')">
+    <!-- MOBILE FOOTER NAV -->
+    <div class="mobile-footer">
+      <div class="nav-item" onclick="goTo('/dashboard.html')">
         <i class="fa-solid fa-house"></i>
         <span>Home</span>
-    </div>
+      </div>
 
-    <div class="nav-item" onclick="goTo('/billing.html')">
+      <div class="nav-item active" onclick="goTo('/billing.html')">
         <i class="fa-solid fa-wallet"></i>
         <span>Billing</span>
-    </div>
+      </div>
 
-    <div class="nav-item" onclick="goTo('/students.html')">
+      <div class="nav-item" onclick="goTo('/students.html')">
         <i class="fa-solid fa-user-graduate"></i>
         <span>Students</span>
-    </div>
+      </div>
 
-    <div class="nav-item" onclick="goTo('/profile.html')">
+      <div class="nav-item" onclick="goTo('/profile.html')">
         <i class="fa-solid fa-user"></i>
         <span>Profile</span>
+      </div>
     </div>
-</div>
+    <script src="js/newheader.js"></script>
+    <script src="js/halfday.js"></script>
+    <script>
+      fetch("/newheader.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("headerContainer").innerHTML = html;
 
-
-<script>
-    fetch("/newheader.html")
-        .then(res => res.text())
-        .then(html => document.getElementById("headerContainer").innerHTML = html);
-</script>
-
-<script src="js/newheader.js"></script>
-<script src="js/halfday.js"></script>
-
-</body>
+          initHeader();
+        })
+        .catch((err) => {
+          console.error("Header loading failed:", err);
+        });
+    </script>
+  </body>
 </html>

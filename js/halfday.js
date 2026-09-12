@@ -143,3 +143,7 @@ function createHalfDayStudent() {
     })
     .catch((err) => alert(err.message));
 }
+
+function goTo(path) {
+  window.location.href = path;
+}

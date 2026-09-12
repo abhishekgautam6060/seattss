@@ -64,53 +64,122 @@
     </div>
 
     <!-- RIGHT PANEL -->
-    <!-- RIGHT PANEL -->
+<!-- RIGHT PANEL -->
+
 <div class="students-right">
 
-    <!-- Empty state -->
-    <div class="student-empty-state" id="studentEmptyState">
-        Student details were shown here !
-    </div>
-
-    <!-- Student Profile -->
-    <div class="profile-card hidden" id="studentProfile">
+    <div
+        class="profile-card hidden"
+        id="studentProfile"
+    >
 
         <div class="profile-avatar">
-            <img src="images/user.png" alt="Student">
+
+            <img src="images/user.png">
+
             <span class="online-dot"></span>
+
         </div>
+
 
         <h3 id="pName">—</h3>
-        <p class="profile-sub" id="pPhone">—</p>
+
+        <p
+            class="profile-sub"
+            id="pPhone"
+        >
+            —
+        </p>
+
 
         <div class="profile-actions">
-            <button class="btn-light">View Profile</button>
-            <button class="btn-icon">✉</button>
+
+            <button class="btn-light">
+                View Profile
+            </button>
+
+            <button class="btn-icon">
+                ✉
+            </button>
+
         </div>
 
+
         <hr>
+
 
         <div class="profile-details">
 
             <div>
                 <span>Seat</span>
-                <strong id="pSeat">—</strong>
+
+                <strong id="pSeat">
+                    —
+                </strong>
             </div>
+
 
             <div>
                 <span>Joined</span>
-                <strong id="pJoined">—</strong>
+
+                <strong id="pJoined">
+                    —
+                </strong>
             </div>
 
+
             <div>
+
                 <span>Plan Expires</span>
-                <strong id="pExpire" class="danger">—</strong>
+
+                <strong
+                    id="pExpire"
+                    class="danger"
+                >
+                    —
+                </strong>
+
             </div>
 
         </div>
 
-        <!-- Dynamic Seat Change History -->
-        <div id="desktopHistory"></div>
+    </div>
+
+
+    <!-- =========================
+         DYNAMIC HISTORY
+    ========================= -->
+
+    <div>
+
+        <div class="history">
+
+            <h4>
+                Seat Change History
+            </h4>
+
+            <ul
+                class="timeline"
+                id="seatChangeTimeline"
+            >
+
+                <li class="history-empty">
+
+                    <span class="dot"></span>
+
+                    <div>
+
+                        <p>
+                            Select a student to view history.
+                        </p>
+
+                    </div>
+
+                </li>
+
+            </ul>
+
+        </div>
 
     </div>
 
@@ -165,17 +234,6 @@
 
             <h3 id="mobilePName">—</h3>
             <p class="mobile-profile-phone" id="mobilePPhone">—</p>
-
-            <div class="mobile-profile-actions">
-                <button class="btn-light">
-                    View Profile
-                </button>
-
-                <button class="btn-icon">
-                    ✉
-                </button>
-            </div>
-
             <hr>
 
             <div class="mobile-profile-details">
@@ -199,33 +257,23 @@
 
             </div>
 
-            <!-- History -->
+           <!-- =========================
+                SEAT CHANGE HISTORY
+            ========================= -->
+
             <div class="mobile-history">
 
                 <h4>Seat Change History</h4>
-
-                <ul class="timeline">
-
-                    <li>
-                        <span class="dot active"></span>
-
-                        <div>
-                            <b>Jan 05, 2026</b>
-                            <p>Seat changed from 2 → 4</p>
-                        </div>
+            
+                <ul
+                    class="timeline"
+                    id="mobileSeatChangeTimeline"
+                >
+                    <li class="history-loading">
+                        Loading history...
                     </li>
-
-                    <li>
-                        <span class="dot"></span>
-
-                        <div>
-                            <b>Dec 01, 2025</b>
-                            <p>Plan renewed</p>
-                        </div>
-                    </li>
-
                 </ul>
-
+            
             </div>
 
         </div>
@@ -257,13 +305,19 @@
             <span>Profile</span>
         </div>
     </div>
-
-    <script>
-        fetch("/newheader.html")
-          .then(res => res.text())
-          .then(html => document.getElementById("headerContainer").innerHTML = html);
-    </script>
     <script src="js/newheader.js"></script>
     <script src="js/students.js"></script>
+    <script>
+        fetch("/newheader.html")
+          .then((res) => res.text())
+          .then((html) => {
+            document.getElementById("headerContainer").innerHTML = html;
+  
+            initHeader();
+          })
+          .catch((err) => {
+            console.error("Header loading failed:", err);
+          });
+      </script>
 </body>
 </html>

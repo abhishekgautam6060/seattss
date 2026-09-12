@@ -66,8 +66,18 @@ fetch(`${HOST_URL}/api/student/library/${CURRENT_LIBRARY_ID}`, {
         document
           .querySelectorAll(".student-table tr")
           .forEach((r) => r.classList.remove("active"));
+
         row.classList.add("active");
-        loadStudentProfile(s);
+
+        // Desktop
+        if (window.innerWidth > 768) {
+          loadStudentProfile(s);
+        }
+
+        // Mobile
+        else {
+          openMobileStudentProfile(s);
+        }
       });
 
       table.appendChild(row);
@@ -195,69 +205,145 @@ function openProfile(s) {
 }
 
 function loadStudentProfile(s) {
-  /* =========================================
-     DESKTOP / TABLET
-  ========================================= */
+  const panel = document.getElementById("studentProfile");
 
-  console.log("Selected student:", s);
-
-  if (window.innerWidth > 768) {
-    const panel = document.getElementById("studentProfile");
-    const emptyState = document.getElementById("studentEmptyState");
-
-    // Hide empty message
-    emptyState.classList.add("hidden");
-
-    // Show profile
-    panel.classList.remove("hidden");
-
-    document.getElementById("pName").innerText = s.name || "-";
-
-    document.getElementById("pPhone").innerText = s.phone || "-";
-
-    document.getElementById("pSeat").innerText = s.seatNumber ?? "-";
-
-    document.getElementById("pJoined").innerText = s.bookingDate
-      ? formatDate(s.bookingDate)
-      : "-";
-
-    document.getElementById("pExpire").innerText = s.expireDate
-      ? formatDate(s.expireDate)
-      : "-";
-
-    // Student-specific history
-    renderStudentHistory(s.history, "desktopHistory");
-
+  if (!panel) {
     return;
   }
 
-  /* =========================================
-     MOBILE
-  ========================================= */
+  // Show profile
+  panel.classList.remove("hidden");
 
-  document.getElementById("mobilePName").innerText = s.name || "-";
+  // ==========================================
+  // BASIC PROFILE DATA
+  // ==========================================
 
-  document.getElementById("mobilePPhone").innerText = s.phone || "-";
+  document.getElementById("pName").innerText = s.name || "-";
 
-  document.getElementById("mobilePSeat").innerText = s.seatNumber ?? "-";
+  document.getElementById("pPhone").innerText = s.phone || "-";
 
-  document.getElementById("mobilePJoined").innerText = s.bookingDate
-    ? formatDate(s.bookingDate)
+  document.getElementById("pSeat").innerText = s.seatNumber ?? "-";
+
+  document.getElementById("pJoined").innerText = s.startDate
+    ? formatDate(s.startDate)
     : "-";
 
-  document.getElementById("mobilePExpire").innerText = s.expireDate
-    ? formatDate(s.expireDate)
+  document.getElementById("pExpire").innerText = s.endDate
+    ? formatDate(s.endDate)
     : "-";
 
-  // Student-specific history
-  renderStudentHistory(s.history, "mobileHistory");
+  // ==========================================
+  // LOAD SEAT CHANGE HISTORY
+  // ==========================================
 
-  // Open mobile popup
-  const modal = document.getElementById("mobileStudentModal");
+  if (s.id) {
+    loadSeatChangeHistory(s.id);
+  } else {
+    console.error("Student ID missing. Cannot load seat history.");
+  }
+}
 
-  modal.classList.add("show");
+/*********************************
+ * LOAD DESKTOP SEAT HISTORY
+ *********************************/
+function loadSeatChangeHistory(studentId) {
+  const container = document.getElementById("seatChangeTimeline");
 
-  document.body.classList.add("mobile-profile-open");
+  if (!container) {
+    console.error("Desktop history container not found");
+    return;
+  }
+
+  // Show loading
+  container.innerHTML = `
+    <li class="history-loading">
+      <span class="dot"></span>
+      <div>
+        <p>Loading history...</p>
+      </div>
+    </li>
+  `;
+
+  fetch(
+    `${HOST_URL}/api/student/${studentId}/seat-history/library/${CURRENT_LIBRARY_ID}`,
+    {
+      method: "GET",
+      headers: getAuthHeaders(),
+    }
+  )
+    .then(async (response) => {
+      if (!response.ok) {
+        const errorText = await response.text();
+
+        throw new Error(`History API failed: ${response.status} ${errorText}`);
+      }
+
+      return response.json();
+    })
+
+    .then((history) => {
+      console.log("🖥️ Desktop seat history:", history);
+
+      container.innerHTML = "";
+
+      // No history
+      if (!Array.isArray(history) || history.length === 0) {
+        container.innerHTML = `
+          <li class="history-empty">
+
+            <span class="dot"></span>
+
+            <div>
+              <p>No seat changes recorded.</p>
+            </div>
+
+          </li>
+        `;
+
+        return;
+      }
+
+      // Render history
+      history.forEach((item, index) => {
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+          <span class="dot ${index === 0 ? "active" : ""}"></span>
+
+          <div>
+
+            <b>
+              ${item.changedAt ? formatHistoryDate(item.changedAt) : "-"}
+            </b>
+
+            <p>
+              Seat changed from
+              <strong>${item.oldSeat}</strong>
+              →
+              <strong>${item.newSeat}</strong>
+            </p>
+
+          </div>
+        `;
+
+        container.appendChild(li);
+      });
+    })
+    .catch((error) => {
+      console.error("❌ Desktop seat history error:", error);
+
+      container.innerHTML = `
+        <li class="history-empty">
+
+          <span class="dot"></span>
+
+          <div>
+            <p>Unable to load seat history.</p>
+          </div>
+
+        </li>
+      `;
+    });
 }
 
 function closeMobileStudentProfile() {
@@ -287,31 +373,72 @@ function goTo(path) {
 function importExcel(event) {
   const file = event.target.files[0];
 
-  let formData = new FormData();
-  formData.append("file", file);
+  if (!file) {
+    return;
+  }
 
-  console.log("Importing file:", file),
-    console.log(
-      "URL",
-      `${HOST_URL}/api/student/import/library/${CURRENT_LIBRARY_ID}`
-    );
+  const fileName = file.name.toLowerCase();
+
+  if (!fileName.endsWith(".xlsx") && !fileName.endsWith(".xls")) {
+    alert("Please select a valid Excel file.");
+
+    event.target.value = "";
+
+    return;
+  }
+
+  if (!CURRENT_LIBRARY_ID) {
+    alert("Library not loaded. Please refresh.");
+
+    event.target.value = "";
+
+    return;
+  }
+
+  const formData = new FormData();
+
+  formData.append("file", file);
 
   fetch(`${HOST_URL}/api/student/import/library/${CURRENT_LIBRARY_ID}`, {
     method: "POST",
-    // ✅ IMPORTANT: Only send Authorization
+
     headers: {
       Authorization: "Bearer " + token,
     },
+
     body: formData,
   })
-    .then((res) => res.text())
-    .then((data) => {
-      alert("Import Successful");
+    .then(async (response) => {
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(data || "Import failed");
+      }
+
+      return data;
+    })
+
+    .then((result) => {
+      console.log("Import result:", result);
+
+      alert(
+        `Import completed!\n\n` +
+          `Imported: ${result.importedCount}\n` +
+          `Failed: ${result.failedCount}`
+      );
+
       location.reload();
     })
-    .catch((err) => {
-      alert("Import Failed");
-      console.error(err);
+
+    .catch((error) => {
+      console.error("Import failed:", error);
+
+      alert(error.message || "Import failed");
+    })
+
+    .finally(() => {
+      // Allow same file to be selected again
+      event.target.value = "";
     });
 }
 
@@ -326,6 +453,7 @@ function exportExcel() {
 
   fetch(url, {
     method: "GET",
+
     headers: {
       Authorization: "Bearer " + token,
     },
@@ -338,24 +466,22 @@ function exportExcel() {
       return response.blob();
     })
     .then((blob) => {
-      // Create temporary download URL
       const downloadUrl = window.URL.createObjectURL(blob);
 
-      // Create temporary anchor
       const a = document.createElement("a");
+
       a.href = downloadUrl;
 
-      // Generate filename
       const today = new Date().toISOString().split("T")[0];
 
       a.download = `students_export_${today}.xlsx`;
 
-      // Trigger download
       document.body.appendChild(a);
+
       a.click();
 
-      // Cleanup
       a.remove();
+
       window.URL.revokeObjectURL(downloadUrl);
 
       alert("Students exported successfully!");
@@ -410,4 +536,191 @@ function renderStudentHistory(history, containerId) {
   `;
 
   container.innerHTML = historyHTML;
+}
+
+/*********************************
+ * MOBILE STUDENT PROFILE
+ *********************************/
+function openMobileStudentProfile(s) {
+  const modal = document.getElementById("mobileStudentModal");
+
+  if (!modal) {
+    console.error("Mobile student modal not found");
+    return;
+  }
+
+  console.log("📱 Opening mobile student profile:", s);
+
+  // -----------------------------
+  // BASIC STUDENT INFORMATION
+  // -----------------------------
+
+  document.getElementById("mobilePName").innerText = s.name || "-";
+
+  document.getElementById("mobilePPhone").innerText = s.phone || "-";
+
+  document.getElementById("mobilePSeat").innerText = s.seatNumber ?? "-";
+
+  document.getElementById("mobilePJoined").innerText = s.startDate
+    ? formatDate(s.startDate)
+    : "-";
+
+  document.getElementById("mobilePExpire").innerText = s.endDate
+    ? formatDate(s.endDate)
+    : "-";
+
+  // -----------------------------
+  // SHOW LOADING STATE
+  // -----------------------------
+
+  const historyContainer = document.getElementById("mobileSeatChangeTimeline");
+
+  if (historyContainer) {
+    historyContainer.innerHTML = `
+      <li class="history-loading">
+        Loading history...
+      </li>
+    `;
+  }
+
+  // -----------------------------
+  // SHOW MODAL
+  // -----------------------------
+
+  modal.classList.add("show");
+
+  document.body.classList.add("mobile-profile-open");
+
+  // -----------------------------
+  // LOAD HISTORY
+  // -----------------------------
+
+  if (s.id) {
+    loadMobileSeatChangeHistory(s.id, CURRENT_LIBRARY_ID);
+  } else {
+    console.error("Student ID missing. Cannot load mobile history.");
+
+    if (historyContainer) {
+      historyContainer.innerHTML = `
+        <li class="history-empty">
+          <span class="dot"></span>
+          <div>
+            <p>Student ID not available.</p>
+          </div>
+        </li>
+      `;
+    }
+  }
+}
+
+/*********************************
+ * LOAD MOBILE SEAT HISTORY
+ *********************************/
+function loadMobileSeatChangeHistory(studentId, libraryId) {
+  const container = document.getElementById("mobileSeatChangeTimeline");
+
+  if (!container) {
+    console.error("mobileSeatChangeTimeline not found");
+    return;
+  }
+
+  console.log("📱 Loading mobile seat history:", studentId, libraryId);
+
+  fetch(
+    `${HOST_URL}/api/student/${studentId}/seat-history/library/${libraryId}`,
+    {
+      method: "GET",
+      headers: getAuthHeaders(),
+    }
+  )
+    .then(async (response) => {
+      if (!response.ok) {
+        const errorText = await response.text();
+
+        throw new Error(`History API failed: ${response.status} ${errorText}`);
+      }
+
+      return response.json();
+    })
+
+    .then((history) => {
+      console.log("📱 Mobile seat history:", history);
+
+      container.innerHTML = "";
+
+      if (!Array.isArray(history) || history.length === 0) {
+        container.innerHTML = `
+          <li class="history-empty">
+            <span class="dot"></span>
+
+            <div>
+              <p>No seat changes recorded.</p>
+            </div>
+          </li>
+        `;
+
+        return;
+      }
+
+      history.forEach((item, index) => {
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+          <span class="dot ${index === 0 ? "active" : ""}"></span>
+
+          <div>
+
+            <b>
+              ${item.changedAt ? formatHistoryDate(item.changedAt) : "-"}
+            </b>
+
+            <p>
+              Seat changed from
+              <strong>${item.oldSeat}</strong>
+              →
+              <strong>${item.newSeat}</strong>
+            </p>
+
+          </div>
+        `;
+
+        container.appendChild(li);
+      });
+    })
+
+    .catch((error) => {
+      console.error("❌ Failed to load mobile seat history:", error);
+
+      container.innerHTML = `
+        <li class="history-empty">
+
+          <span class="dot"></span>
+
+          <div>
+            <p>
+              Unable to load seat history.
+            </p>
+          </div>
+
+        </li>
+      `;
+    });
+}
+
+function formatHistoryDate(dateString) {
+  if (!dateString) {
+    return "-";
+  }
+
+  const date = new Date(dateString);
+
+  if (isNaN(date.getTime())) {
+    return "-";
+  }
+
+  return date.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 }

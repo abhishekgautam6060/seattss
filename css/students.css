@@ -398,6 +398,26 @@ body {
   color: #2563eb;
 }
 
+/* =========================
+   DYNAMIC HISTORY STATES
+========================= */
+
+.history-loading,
+.history-empty {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.history-loading p,
+.history-empty p {
+  margin: 0;
+}
+
+.timeline b {
+  font-size: 13px;
+  color: #374151;
+}
+
 /* =====================================================
    MOBILE RESPONSIVE
 ===================================================== */
@@ -814,5 +834,38 @@ body {
   /* Prevent background scrolling while modal is open */
   body.mobile-profile-open {
     overflow: hidden;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-history {
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+    text-align: left;
+  }
+
+  .mobile-history .timeline {
+    max-height: 180px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .mobile-history .timeline li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .mobile-history .timeline p {
+    margin: 3px 0 0;
+    color: #6b7280;
+    font-size: 12px;
+  }
+
+  .mobile-history .timeline b {
+    font-size: 13px;
+    color: #374151;
   }
 }

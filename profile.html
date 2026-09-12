@@ -55,16 +55,19 @@
         <span>Profile</span>
       </div>
     </div>
-
+    <script src="js/newheader.js"></script>
+    <script src="js/profile.js"></script>
     <script>
       fetch("/newheader.html")
         .then((res) => res.text())
-        .then(
-          (html) =>
-            (document.getElementById("headerContainer").innerHTML = html)
-        );
+        .then((html) => {
+          document.getElementById("headerContainer").innerHTML = html;
+
+          initHeader();
+        })
+        .catch((err) => {
+          console.error("Header loading failed:", err);
+        });
     </script>
-    <script src="js/newheader.js"></script>
-    <script src="js/profile.js"></script>
   </body>
 </html>
