@@ -2,8 +2,8 @@ let CURRENT_LIBRARY_ID = localStorage.getItem("LIBRARY_ID")
   ? Number(localStorage.getItem("LIBRARY_ID"))
   : null;
 
-// const HOST_URL = "https://seat-manager-backend-production.up.railway.app";
-const HOST_URL = "http://localhost:8080";
+ const HOST_URL = "https://seat-manager-backend-production.up.railway.app";
+//const HOST_URL = "http://localhost:8080";
 
 /*********************************
  * AUTH HEADER HELPER

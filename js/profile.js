@@ -6,8 +6,8 @@ if (!CURRENT_LIBRARY_ID) {
   throw new Error("Library missing");
 }
 
-// const HOST_URL = "https://seat-manager-backend-production.up.railway.app";
-const HOST_URL = "http://localhost:8080";
+ const HOST_URL = "https://seat-manager-backend-production.up.railway.app";
+//const HOST_URL = "http://localhost:8080";
 
 /*********************************
  * AUTH HEADER HELPER
